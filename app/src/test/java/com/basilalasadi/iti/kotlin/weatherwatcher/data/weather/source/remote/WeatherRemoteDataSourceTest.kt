@@ -1,6 +1,6 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote
 
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.location.model.City
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.City
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.AppLocale
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.LocalizedName
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote.api.WeatherApiService

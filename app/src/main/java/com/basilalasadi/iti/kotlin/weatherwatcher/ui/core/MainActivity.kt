@@ -10,6 +10,7 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.ui.currentweather.view.Current
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
         enableEdgeToEdge()
         setContent {
             WeatherWatcherTheme {

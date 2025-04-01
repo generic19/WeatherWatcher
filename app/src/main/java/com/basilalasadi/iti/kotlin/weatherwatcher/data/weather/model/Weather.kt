@@ -1,7 +1,5 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model
 
-import android.app.Application
-import android.content.Context
 import androidx.annotation.StringRes
 import com.basilalasadi.iti.kotlin.weatherwatcher.R
 import java.time.LocalTime
@@ -30,10 +28,10 @@ data class Weather(
     val sunset: LocalTime?,
 ) {
     data class Temperature(
-        val currentTemperature: Double,
-        val feelsLikeTemperature: Double,
-        val minTemperature: Double,
-        val maxTemperature: Double,
+        val current: Double,
+        val feelsLike: Double,
+        val min: Double,
+        val max: Double,
     )
 
     data class Pressure(
@@ -82,7 +80,7 @@ data class Weather(
             }
         }
     }
-
+    
     enum class Condition(
         val id: Int,
         val group: Group,

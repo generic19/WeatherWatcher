@@ -1,6 +1,11 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote.api.dto
 
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Dated
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Weather
 import com.google.gson.annotations.SerializedName
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 
 data class WeatherDataPoint(
@@ -63,4 +68,58 @@ data class Precipitation(
 data class System(
     @SerializedName("sunrise") val sunriseUtcTimestamp: Long?,
     @SerializedName("sunset") val sunsetUtcTimestamp: Long?,
+)
+
+
+fun WeatherDataPoint.toDatedModel(
+    timezone: Int,
+    sunrise: Long,
+    sunset: Long,
+    airPollutionDataPoint: AirPollutionDataPoint?,
+): Dated<Weather> = Dated(
+    dateTime = ZonedDateTime.ofInstant(
+        Instant.ofEpochSecond(utcTimestamp.toLong()),
+        ZoneOffset.UTC
+    ),
+    value = Weather(
+        temperature = Weather.Temperature(
+            current = mainWeather.temperature,
+            feelsLike = mainWeather.feelsLikeTemperature,
+            min = mainWeather.minTemperature,
+            max = mainWeather.maxTemperature,
+        ),
+        condition = Weather.Condition.byId(weatherConditions[0].id),
+        pressure = Weather.Pressure(
+            seaLevel = mainWeather.seaLevelPressure,
+            groundLevel = mainWeather.groundLevelPressure,
+        ),
+        precipitation = Weather.Precipitation(
+            rain = rainPrecipitation?.perHour ?: 0.0,
+            snow = snowPrecipitation?.perHour ?: 0.0,
+            probability = probabilityOfRain,
+        ),
+        wind = Weather.Wind(
+            speed = windStatus.speed,
+            direction = windStatus.direction.toDouble(),
+            gust = windStatus.gust,
+        ),
+        airPollution = airPollutionDataPoint?.run {
+            Weather.AirPollution(
+                airQualityIndex = Weather.AirPollution.AirQualityIndex.byIndex(mainAirPollution.airQualityIndex),
+                carbonMonoxide = components.carbonMonoxide,
+                nitrogenMonoxide = components.nitrogenMonoxide,
+                nitrogenDioxide = components.nitrogenDioxide,
+                ozone = components.ozone,
+                sulfurDioxide = components.sulfurDioxide,
+                fineParticleMatter = components.fineParticleMatter,
+                coarseParticleMatter = components.coarseParticleMatter,
+                ammonia = components.ammonia,
+            )
+        },
+        cloudiness = clouds.cloudinessPercent / 100.0,
+        humidity = mainWeather.humidity / 100.0,
+        visibility = visibility.toDouble(),
+        sunrise = Instant.ofEpochSecond(sunrise).atOffset(ZoneOffset.ofTotalSeconds(timezone)).toLocalTime(),
+        sunset = Instant.ofEpochSecond(sunset).atOffset(ZoneOffset.ofTotalSeconds(timezone)).toLocalTime(),
+    ),
 )

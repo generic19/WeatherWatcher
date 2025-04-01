@@ -18,14 +18,12 @@ interface WeatherApiService {
     suspend fun getCurrentWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
-        @Query("lang") languageCode: String,
     ): Response<WeatherDataPoint>
 
     @GET("forecast")
     suspend fun getWeatherForecast(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
-        @Query("lang") languageCode: String,
     ): Response<WeatherData>
 
     @GET("air_pollution")
