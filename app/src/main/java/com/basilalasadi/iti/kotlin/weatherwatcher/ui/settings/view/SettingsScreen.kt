@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsRadioButton
 import com.alorma.compose.settings.ui.base.internal.SettingsTileDefaults
+import com.basilalasadi.iti.kotlin.weatherwatcher.R
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.Setting
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.Setting.EnumSetting
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.Settings
@@ -47,7 +48,7 @@ fun SettingsScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = "Settings",
+            text = stringResource(R.string.settings),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .padding(16.dp)
@@ -231,7 +232,7 @@ fun SettingDialog(
                         modifier = Modifier
                             .padding(end = 8.dp)
                     ) {
-                        Text("Discard")
+                        Text(stringResource(R.string.discard))
                     }
                     
                     Button(
@@ -239,7 +240,7 @@ fun SettingDialog(
                             onCommit()
                             onDismissRequest()
                         }
-                    ) { Text("Confirm") }
+                    ) { Text(stringResource(R.string.confirm)) }
                 }
             }
         }

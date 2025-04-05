@@ -96,7 +96,7 @@ fun SearchDialog(
                             modifier = Modifier.Companion
                                 .align(Alignment.Companion.CenterHorizontally)
                         ) {
-                            Text("Choose from Map")
+                            Text(stringResource(R.string.choose_from_map))
                         }
                     }
                 }

@@ -32,7 +32,7 @@ fun AirPollutionCard(modifier: Modifier = Modifier, data: Weather.AirPollution) 
                 .padding(bottom = 16.dp)
         ) {
             Text(
-                text = "Air Quality Index",
+                text = stringResource(R.string.air_quality_index),
                 style = MaterialTheme.typography.titleLarge
             )
             
@@ -58,14 +58,14 @@ fun AirPollutionCard(modifier: Modifier = Modifier, data: Weather.AirPollution) 
             )
             
             sequenceOf<Pair<String, Double>>(
-                "Carbon Monoxide" to data.carbonMonoxide,
-                "Nitrogen Monoxide" to data.nitrogenMonoxide,
-                "Nitrogen Dioxide" to data.nitrogenDioxide,
-                "Ozone" to data.ozone,
-                "Sulfur Dioxide" to data.sulfurDioxide,
-                "Ammonia" to data.ammonia,
-                "Fine Particle Matter" to data.fineParticleMatter,
-                "Coarse Particle Matter" to data.coarseParticleMatter,
+                stringResource(R.string.carbon_monoxide) to data.carbonMonoxide,
+                stringResource(R.string.nitrogen_monoxide) to data.nitrogenMonoxide,
+                stringResource(R.string.nitrogen_dioxide) to data.nitrogenDioxide,
+                stringResource(R.string.ozone) to data.ozone,
+                stringResource(R.string.sulfur_dioxide) to data.sulfurDioxide,
+                stringResource(R.string.ammonia) to data.ammonia,
+                stringResource(R.string.fine_particle_matter) to data.fineParticleMatter,
+                stringResource(R.string.coarse_particle_matter) to data.coarseParticleMatter,
             ).forEach {
                 HorizontalDivider()
                 
@@ -79,7 +79,7 @@ fun AirPollutionCard(modifier: Modifier = Modifier, data: Weather.AirPollution) 
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = "%.2f μg/m³".format(it.second),
+                        text = stringResource(R.string.template_concentration).format(it.second),
                         modifier = Modifier
                     )
                 }

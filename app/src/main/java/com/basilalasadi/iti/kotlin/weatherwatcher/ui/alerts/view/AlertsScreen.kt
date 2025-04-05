@@ -84,7 +84,7 @@ fun AlertsScreen(
     ) {
         item {
             Text(
-                text = "Weather Alerts",
+                text = stringResource(R.string.weather_alerts),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier
                     .padding(8.dp)
@@ -104,7 +104,7 @@ fun AlertsScreen(
         } else {
             item {
                 Text(
-                    text = "No scheduled alerts.",
+                    text = stringResource(R.string.no_scheduled_alerts),
                     style = MaterialTheme.typography.bodyMedium.copy(textAlign = TextAlign.Center),
                     modifier = Modifier
                         .alpha(0.7f)
@@ -227,7 +227,7 @@ fun DateTimePickerDialog(
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = "Pick Alert Time",
+                    text = stringResource(R.string.pick_date_and_time),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .padding(top = 24.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
@@ -258,7 +258,7 @@ fun DateTimePickerDialog(
                         modifier = Modifier
                             .padding(end = 8.dp)
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
                     
                     Button(
@@ -266,7 +266,7 @@ fun DateTimePickerDialog(
                             onCommit(selectedTime)
                             onDismissRequest()
                         }
-                    ) { Text("Confirm") }
+                    ) { Text(stringResource(R.string.confirm)) }
                 }
             }
         }

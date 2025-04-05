@@ -76,7 +76,7 @@ fun SavedLocationsScreen(
     ) {
         item {
             Text(
-                text = "Saved Locations",
+                text = stringResource(R.string.saved_locations),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier
                     .padding(8.dp)
@@ -97,7 +97,7 @@ fun SavedLocationsScreen(
         } else {
             item {
                 Text(
-                    text = "No saved locations.",
+                    text = stringResource(R.string.no_saved_locations),
                     style = MaterialTheme.typography.bodyMedium.copy(textAlign = TextAlign.Center),
                     modifier = Modifier
                         .alpha(0.7f)

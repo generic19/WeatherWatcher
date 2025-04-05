@@ -44,7 +44,7 @@ fun PressureCard(modifier: Modifier, data: PressureCardData) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp)
+                .padding(bottom = 8.dp)
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -73,7 +73,6 @@ fun PressureCard(modifier: Modifier, data: PressureCardData) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .alpha(0.5f)
-                    .padding(top = 8.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_ground),

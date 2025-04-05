@@ -70,7 +70,7 @@ fun MapDialog(
                     selectedLocation?.let {
                         Marker(
                             state = MarkerState.Companion(position = it),
-                            title = "Selected Location",
+                            title = stringResource(R.string.selected_location),
                         )
                     }
                 }

@@ -70,7 +70,7 @@ fun WindCard(modifier: Modifier, data: WindCardData) {
             ) {
                 Row {
                     Text(
-                        text = "Wind",
+                        text = stringResource(R.string.wind),
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
@@ -86,7 +86,7 @@ fun WindCard(modifier: Modifier, data: WindCardData) {
                 
                 Row {
                     Text(
-                        text = "Gusts",
+                        text = stringResource(R.string.gusts),
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
@@ -102,7 +102,7 @@ fun WindCard(modifier: Modifier, data: WindCardData) {
                 
                 Row {
                     Text(
-                        text = "Direction",
+                        text = stringResource(R.string.direction),
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
