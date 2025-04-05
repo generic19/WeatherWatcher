@@ -48,7 +48,7 @@ class LocationDaoTest {
             AppDatabase::class.java,
         ).build()
         
-        dao = database.getLocationDao()
+        dao = database.getCityDao()
     }
     
     @After

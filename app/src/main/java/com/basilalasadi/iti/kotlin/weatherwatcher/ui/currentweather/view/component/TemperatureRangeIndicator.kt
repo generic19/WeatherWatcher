@@ -35,7 +35,10 @@ fun TemperatureRangeIndicator(
     val colorStops = remember<Array<Pair<Float, Color>>>(lowTempCelsius, highTempCelsius) {
         val numSteps = ((highTempCelsius - lowTempCelsius) / 5).toInt().coerceIn(4..20)
         
-        linearSpace(lowTempCelsius, highTempCelsius, numSteps) { x, f -> x to temperatureColor(f) }
+        linearSpace(lowTempCelsius, highTempCelsius, numSteps)
+            { x, f ->
+                (lowTempScale + x * (highTempScale - lowTempScale)) to temperatureColor(f)
+            }
             .toList()
             .toTypedArray()
     }

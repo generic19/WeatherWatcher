@@ -14,16 +14,17 @@ import java.time.Period
 import java.time.ZonedDateTime
 
 interface WeatherLocalDataSource {
-    fun getLatestWeatherFlow(city: City): Flow<Dated<Weather>?>
+    fun getPresentWeatherFlow(city: City): Flow<Dated<Weather>?>
     fun getWeatherForecastFlow(city: City): Flow<List<Dated<Weather>>>
     suspend fun putWeather(weathers: List<DatedLocated<Weather>>)
 }
 
 class WeatherLocalDataSourceImpl(private val weatherDao: WeatherDao) : WeatherLocalDataSource {
-    override fun getLatestWeatherFlow(city: City): Flow<Dated<Weather>?> =
-        weatherDao.getLatestWeatherFlow(
+    override fun getPresentWeatherFlow(city: City): Flow<Dated<Weather>?> =
+        weatherDao.getPresentWeatherFlow(
             cityName = city.name.get(AppLocale.English),
-            cityCountry = city.country
+            cityCountry = city.country,
+            now = ZonedDateTime.now(),
         ).map {
             it?.toModel()?.run { Dated(dateTime, value) }
         }

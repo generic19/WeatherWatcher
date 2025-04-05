@@ -14,13 +14,15 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Weather.Pre
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Weather.Temperature
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Weather.Wind
 import java.time.LocalTime
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 @Entity(
-    primaryKeys = ["timestamp", "city_name", "city_country"]
+    primaryKeys = ["dateTime", "city_name", "city_country"]
 )
 data class WeatherEntity(
     val dateTime: ZonedDateTime,
+    val timezone: Int,
     @Embedded("city_") val cityEntity: CityEntity,
     @Embedded("temperature_") val temperature: Temperature,
     val condition: Condition,
@@ -36,7 +38,8 @@ data class WeatherEntity(
 )
 
 fun DatedLocated<Weather>.toEntity() = WeatherEntity(
-    dateTime = dateTime,
+    dateTime = dateTime.withZoneSameInstant(ZoneOffset.UTC),
+    timezone = dateTime.offset.totalSeconds,
     cityEntity = city.toEntity(),
     temperature = value.temperature,
     condition = value.condition,
@@ -52,7 +55,7 @@ fun DatedLocated<Weather>.toEntity() = WeatherEntity(
 )
 
 fun WeatherEntity.toModel() = DatedLocated<Weather>(
-    dateTime = dateTime,
+    dateTime = dateTime.withZoneSameInstant(ZoneOffset.ofTotalSeconds(timezone)),
     city = cityEntity.toModel(),
     value = Weather(
         temperature = temperature,

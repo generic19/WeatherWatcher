@@ -12,15 +12,17 @@ import java.time.ZonedDateTime
 @Dao
 interface WeatherDao {
     @Query("""
-        select *
+        select
+            *,
+            abs(dateTime - :now) as fromNow
         from WeatherEntity
         where
             city_name = :cityName and
             city_country = :cityCountry
-        order by dateTime desc
+        order by fromNow asc
         limit 1
     """)
-    fun getLatestWeatherFlow(cityName: String, cityCountry: City.Country): Flow<WeatherEntity?>
+    fun getPresentWeatherFlow(cityName: String, cityCountry: City.Country, now: ZonedDateTime): Flow<WeatherEntity?>
     
     @Query("""
         select *
@@ -39,5 +41,5 @@ interface WeatherDao {
     ): Flow<List<WeatherEntity>>
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun putWeather(weathers: List<WeatherEntity>): Int
+    suspend fun putWeather(weathers: List<WeatherEntity>): List<Long>
 }

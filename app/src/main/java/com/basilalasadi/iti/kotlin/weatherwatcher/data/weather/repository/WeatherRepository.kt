@@ -21,7 +21,7 @@ class WeatherRepositoryImpl(
 ) : WeatherRepository {
 
     override fun getLatestWeatherFlow(city: City): Flow<Dated<Weather>?> =
-        localDataSource.getLatestWeatherFlow(city)
+        localDataSource.getPresentWeatherFlow(city)
     
     override suspend fun loadCurrentWeather(city: City) {
         val remoteWeather = remoteDataSource.getCurrentWeather(city).toDatedLocated(city)

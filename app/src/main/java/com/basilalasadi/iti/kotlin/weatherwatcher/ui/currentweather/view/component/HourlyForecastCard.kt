@@ -1,6 +1,7 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.ui.currentweather.view.component
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -14,14 +15,69 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.basilalasadi.iti.kotlin.weatherwatcher.R
 
-interface HourlyForecastCardItemData {
-    val timeLabel: String
-    @get:DrawableRes val weatherIcon: Int
-    val temperature: String
+data class HourlyForecastCardItemData(
+    val timeLabel: String,
+    @DrawableRes val weatherIcon: Int,
+    val temperature: Double,
+    @StringRes val temperatureUnit: Int,
+) {
+    companion object {
+        val preview = listOf(
+            HourlyForecastCardItemData(
+                timeLabel = "Now",
+                weatherIcon = R.drawable.cloudy_2,
+                temperature = 12.0,
+                temperatureUnit = R.string.unit_celsius,
+            ),
+            HourlyForecastCardItemData(
+                timeLabel = "3 AM",
+                weatherIcon = R.drawable.cloudy_2,
+                temperature = 13.0,
+                temperatureUnit = R.string.unit_celsius,
+            ),
+            HourlyForecastCardItemData(
+                timeLabel = "6 AM",
+                weatherIcon = R.drawable.cloudy_1,
+                temperature = 15.0,
+                temperatureUnit = R.string.unit_celsius,
+            ),
+            HourlyForecastCardItemData(
+                timeLabel = "9 AM",
+                weatherIcon = R.drawable.fair,
+                temperature = 17.0,
+                temperatureUnit = R.string.unit_celsius,
+            ),
+            HourlyForecastCardItemData(
+                timeLabel = "12 PM",
+                weatherIcon = R.drawable.clear,
+                temperature = 21.0,
+                temperatureUnit = R.string.unit_celsius,
+            ),
+            HourlyForecastCardItemData(
+                timeLabel = "3 PM",
+                weatherIcon = R.drawable.fair,
+                temperature = 19.0,
+                temperatureUnit = R.string.unit_celsius,
+            ),
+            HourlyForecastCardItemData(
+                timeLabel = "6 PM",
+                weatherIcon = R.drawable.clear,
+                temperature = 18.0,
+                temperatureUnit = R.string.unit_celsius,
+            ),
+            HourlyForecastCardItemData(
+                timeLabel = "9 PM",
+                weatherIcon = R.drawable.cloudy_1,
+                temperature = 15.0,
+                temperatureUnit = R.string.unit_celsius,
+            ),
+        )
+    }
 }
 
 @Composable
@@ -68,7 +124,7 @@ private fun HourlyWeatherItem(item: HourlyForecastCardItemData) {
                 .size(48.dp)
         )
         Text(
-            text = item.temperature,
+            text = "%.0f%s".format(item.temperature, stringResource(item.temperatureUnit)),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
         )
@@ -78,51 +134,8 @@ private fun HourlyWeatherItem(item: HourlyForecastCardItemData) {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    val items = listOf(
-        object : HourlyForecastCardItemData {
-            override val timeLabel: String = "Now"
-            override val weatherIcon: Int = R.drawable.cloudy_2
-            override val temperature: String = "12°C"
-        },
-        object : HourlyForecastCardItemData {
-            override val timeLabel: String = "3 AM"
-            override val weatherIcon: Int = R.drawable.cloudy_2
-            override val temperature: String = "13°C"
-        },
-        object : HourlyForecastCardItemData {
-            override val timeLabel: String = "6 AM"
-            override val weatherIcon: Int = R.drawable.cloudy_1
-            override val temperature: String = "15°C"
-        },
-        object : HourlyForecastCardItemData {
-            override val timeLabel: String = "9 AM"
-            override val weatherIcon: Int = R.drawable.fair
-            override val temperature: String = "17°C"
-        },
-        object : HourlyForecastCardItemData {
-            override val timeLabel: String = "12 PM"
-            override val weatherIcon: Int = R.drawable.clear
-            override val temperature: String = "21°C"
-        },
-        object : HourlyForecastCardItemData {
-            override val timeLabel: String = "3 PM"
-            override val weatherIcon: Int = R.drawable.fair
-            override val temperature: String = "19°C"
-        },
-        object : HourlyForecastCardItemData {
-            override val timeLabel: String = "6 PM"
-            override val weatherIcon: Int = R.drawable.clear
-            override val temperature: String = "18°C"
-        },
-        object : HourlyForecastCardItemData {
-            override val timeLabel: String = "9 PM"
-            override val weatherIcon: Int = R.drawable.cloudy_1
-            override val temperature: String = "15°C"
-        },
-    )
-    
     HourlyForecastCard(
-        items = items,
+        items = HourlyForecastCardItemData.preview,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)

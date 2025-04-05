@@ -31,7 +31,7 @@ interface CityApiService {
                     .addInterceptor(QueryAppender("appid", BuildConfig.OPEN_WEATHER_API_KEY))
                     .build()
             )
-            .baseUrl("http://api.openweathermap.org/geo/1.0/")
+            .baseUrl("https://api.openweathermap.org/geo/1.0/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(CityApiService::class.java)

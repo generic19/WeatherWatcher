@@ -70,17 +70,18 @@ data class System(
     @SerializedName("sunset") val sunsetUtcTimestamp: Long?,
 )
 
-
 fun WeatherDataPoint.toDatedModel(
     timezone: Int,
     sunrise: Long,
     sunset: Long,
     airPollutionDataPoint: AirPollutionDataPoint?,
 ): Dated<Weather> = Dated(
-    dateTime = ZonedDateTime.ofInstant(
-        Instant.ofEpochSecond(utcTimestamp.toLong()),
-        ZoneOffset.UTC
-    ),
+    dateTime = ZonedDateTime
+        .ofInstant(
+            Instant.ofEpochSecond(utcTimestamp.toLong()),
+            ZoneOffset.UTC
+        )
+        .withZoneSameInstant(ZoneOffset.ofTotalSeconds(timezone)),
     value = Weather(
         temperature = Weather.Temperature(
             current = mainWeather.temperature,

@@ -1,5 +1,6 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.ui.currentweather.view.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,17 +34,17 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.metersPerSe
 data class WindCardData(
     val windSpeed: Units.Speed,
     val windGust: Units.Speed,
-    val speedUnit: String,
-    val windDirection: String,
+    @StringRes val speedUnit: Int,
     val directionDegrees: Double,
+    @StringRes val generalDirection: Int,
 ) {
     companion object {
         val preview = WindCardData(
             windSpeed = 12.0.metersPerSecond,
             windGust = 22.0.metersPerSecond,
-            speedUnit = "m/s",
-            windDirection = "33° NE",
+            speedUnit = R.string.meters_per_second,
             directionDegrees = 33.0,
+            generalDirection = R.string.direction_north_east,
         )
     }
 }
@@ -75,7 +77,7 @@ fun WindCard(modifier: Modifier, data: WindCardData) {
                             .weight(1f)
                     )
                     Text(
-                        text = "%.0f %s".format(data.windSpeed.value, data.speedUnit),
+                        text = "%.1f %s".format(data.windSpeed.value, stringResource(data.speedUnit)),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -91,7 +93,7 @@ fun WindCard(modifier: Modifier, data: WindCardData) {
                             .weight(1f)
                     )
                     Text(
-                        text = "%.0f %s".format(data.windGust.value, data.speedUnit),
+                        text = "%.1f %s".format(data.windGust.value, stringResource(data.speedUnit)),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -107,7 +109,7 @@ fun WindCard(modifier: Modifier, data: WindCardData) {
                             .weight(1f)
                     )
                     Text(
-                        text = data.windDirection,
+                        text = "%.0f° %s".format(data.directionDegrees, stringResource(data.generalDirection)),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -169,7 +171,7 @@ fun WindDirectionIndicator(modifier: Modifier = Modifier, data: WindCardData) {
                     )
             )
             Text(
-                text = data.speedUnit,
+                text = stringResource(data.speedUnit),
                 style = MaterialTheme.typography.bodySmall
                     .copy(
                         lineHeightStyle = LineHeightStyle(

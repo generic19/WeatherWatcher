@@ -24,6 +24,7 @@ fun LabeledCard(
         color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(
             alpha = 0.5f
         ),
+        contentColor = MaterialTheme.colorScheme.onSurface,
         modifier = modifier
     ) {
         Column(

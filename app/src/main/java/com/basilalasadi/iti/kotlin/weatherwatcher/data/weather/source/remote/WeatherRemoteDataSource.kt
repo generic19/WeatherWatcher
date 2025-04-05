@@ -1,7 +1,7 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote
 
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.DataException
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.City
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.WeatherException
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Dated
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Weather
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote.api.WeatherApiService
@@ -45,10 +45,10 @@ class WeatherRemoteDataSourceImpl(private val weatherApiService: WeatherApiServi
                     airPollutionDataPoint = airPollutionResponse.body()?.dataPoints?.getOrNull(0),
                 )
             } else {
-                throw WeatherException("API responded with ${currentWeatherResponse.message()}.")
+                throw DataException("API responded with ${currentWeatherResponse.message()}.")
             }
         } catch (ex: IOException) {
-            throw WeatherException("Could not reach weather API.", ex)
+            throw DataException("Could not reach weather API.", ex)
         }
     }
 
@@ -59,7 +59,7 @@ class WeatherRemoteDataSourceImpl(private val weatherApiService: WeatherApiServi
                 longitude = city.coordinates.longitude,
             )
         } catch (ex: IOException) {
-            throw WeatherException("Could not reach weather API.", ex)
+            throw DataException("Could not reach weather API.", ex)
         }
 
         if (response.isSuccessful) {
@@ -74,7 +74,7 @@ class WeatherRemoteDataSourceImpl(private val weatherApiService: WeatherApiServi
                 )
             }
         } else {
-            throw WeatherException("Weather API responded with ${response.message()}.")
+            throw DataException("Weather API responded with ${response.message()}.")
         }
     }
 }

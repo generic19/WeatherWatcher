@@ -2,7 +2,7 @@ package com.basilalasadi.iti.kotlin.weatherwatcher.data.city.repository
 
 import com.basilalasadi.iti.kotlin.weatherwatcher.BuildConfig
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.common.model.Result
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.CityException
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.DataException
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.Alert
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.City
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.local.CityLocalDataSource
@@ -27,11 +27,14 @@ interface CityRepository {
     suspend fun setAlertActive(alert: Alert, isActive: Boolean): Boolean
     
     companion object {
+        fun getTemperatureMapTileUrl(tileX: Int, tileY: Int, zoomLevel: Int): String {
+            val base = "https://tile.openweathermap.org/map/temp_new"
+            return "$base/$zoomLevel/$tileX/$tileY?appid=${BuildConfig.OPEN_WEATHER_API_KEY}"
+        }
+        
         fun getTemperatureMapTileUrl(coordinates: City.Coordinates, zoomLevel: Int): String {
             val (tileX, tileY) = AppMath.coordinatesToMapTile(coordinates, zoomLevel)
-            
-            val base = "https://tile.openweathermap.org/map/temp"
-            return "$base/$zoomLevel/$tileX/$tileY?appid=${BuildConfig.OPEN_WEATHER_API_KEY}"
+            return getTemperatureMapTileUrl(tileX, tileY, zoomLevel)
         }
     }
 }
@@ -54,10 +57,10 @@ class CityRepositoryImpl(
             send(Result.Loading())
             
             val deferredLocal = async { localDataSource.findCitiesByName(query) }
-            val deferredRemote = async<Pair<List<City>?, CityException?>> {
+            val deferredRemote = async<Pair<List<City>?, DataException?>> {
                 try {
                     return@async remoteDataSource.findCitiesByQuery(query) to null
-                } catch (ex: CityException) {
+                } catch (ex: DataException) {
                     return@async null to ex
                 }
             }
@@ -77,8 +80,15 @@ class CityRepositoryImpl(
     }
 
     override suspend fun getCity(coordinates: City.Coordinates): City {
-        return localDataSource.findClosestCity(coordinates)
-            ?: remoteDataSource.findCityByCoordinates(coordinates)
+        val local = localDataSource.findClosestCity(coordinates)
+        
+        if (local != null) {
+            return local
+        } else {
+            val remote = remoteDataSource.findCityByCoordinates(coordinates)
+            localDataSource.putCities(listOf(remote))
+            return remote
+        }
     }
 
     override suspend fun setFavorite(city: City, isFavorite: Boolean) =
@@ -91,7 +101,7 @@ class CityRepositoryImpl(
     override suspend fun setAlertActive(alert: Alert, isActive: Boolean): Boolean {
         return if (alert.requestCode == null) {
             if (isActive) {
-                throw CityException("Alert does not have a request code.")
+                throw DataException("Alert does not have a request code.")
             } else {
                 true
             }

@@ -2,6 +2,7 @@ package com.basilalasadi.iti.kotlin.weatherwatcher.ui.currentweather.view.compon
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,7 +28,7 @@ data class DailyForecastCardData(
     val forecastMin: Units.Temperature,
     val forecastMax: Units.Temperature,
     val forecastDays: List<ForecastDay>,
-    val temperatureUnit: String,
+    @StringRes val temperatureUnit: Int,
 ) {
     data class ForecastDay(
         val dayName: String,
@@ -39,33 +41,33 @@ data class DailyForecastCardData(
         val preview = DailyForecastCardData(
             forecastMin = 12.0.celsius,
             forecastMax = 33.0.celsius,
-            temperatureUnit = "°C",
+            temperatureUnit = R.string.unit_celsius,
             forecastDays = listOf(
-                DailyForecastCardData.ForecastDay(
+                ForecastDay(
                     dayName = "Saturday",
                     minTemperature = 12.0.celsius,
                     maxTemperature = 19.0.celsius,
                     weatherIcon = R.drawable.cloudy_2,
                 ),
-                DailyForecastCardData.ForecastDay(
+                ForecastDay(
                     dayName = "Sunday",
                     minTemperature = 13.0.celsius,
                     maxTemperature = 21.0.celsius,
                     weatherIcon = R.drawable.cloudy_1,
                 ),
-                DailyForecastCardData.ForecastDay(
+                ForecastDay(
                     dayName = "Monday",
                     minTemperature = 22.0.celsius,
                     maxTemperature = 33.0.celsius,
                     weatherIcon = R.drawable.clear,
                 ),
-                DailyForecastCardData.ForecastDay(
+                ForecastDay(
                     dayName = "Tuesday",
                     minTemperature = 17.0.celsius,
                     maxTemperature = 24.0.celsius,
                     weatherIcon = R.drawable.fair,
                 ),
-                DailyForecastCardData.ForecastDay(
+                ForecastDay(
                     dayName = "Wednesday",
                     minTemperature = 15.0.celsius,
                     maxTemperature = 23.0.celsius,
@@ -114,7 +116,7 @@ fun DailyForecastCard(modifier: Modifier, data: DailyForecastCardData) {
                     )
                     Spacer(modifier = Modifier.weight(0.25f))
                     Text(
-                        text = "%.1f%s".format(item.minTemperature.value, data.temperatureUnit),
+                        text = "%.0f%s".format(item.minTemperature.value, stringResource(data.temperatureUnit)),
                         style = MaterialTheme.typography.labelLarge,
                     )
                     TemperatureRangeIndicator(
@@ -127,7 +129,7 @@ fun DailyForecastCard(modifier: Modifier, data: DailyForecastCardData) {
                             .padding(horizontal = 12.dp)
                     )
                     Text(
-                        text = "%.1f%s".format(item.maxTemperature.value, data.temperatureUnit),
+                        text = "%.0f%s".format(item.maxTemperature.value, stringResource(data.temperatureUnit)),
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }

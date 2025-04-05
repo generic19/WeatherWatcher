@@ -1,13 +1,15 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model
 
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.LocalizedName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class City(
     val coordinates: Coordinates,
     val name: LocalizedName,
     val country: Country,
 ) {
+    @Serializable
     data class Coordinates(
         val latitude: Double,
         val longitude: Double,

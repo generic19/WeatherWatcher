@@ -1,5 +1,6 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.ui.currentweather.view.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,13 +14,13 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.R
 
 data class PrecipitationCardData(
     val precipitation: String,
-    val precipitationType: String,
-    val probability: String,
+    @StringRes val precipitationType: Int,
+    val probability: String?,
 ) {
     companion object {
         val preview = PrecipitationCardData(
             precipitation = "3 mm",
-            precipitationType = "Rain",
+            precipitationType = R.string.cond_rain,
             probability = "10%",
         )
     }
@@ -27,34 +28,14 @@ data class PrecipitationCardData(
 
 @Composable
 fun PrecipitationCard(modifier: Modifier, data: PrecipitationCardData) {
-    LabeledCard(
-        painter = painterResource(R.drawable.wi_raindrop),
+    InfoCard(
+        modifier = modifier,
+        icon = R.drawable.wi_raindrop,
         label = R.string.lbl_precipitation,
-        modifier = modifier
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp)
-        ) {
-            Text(
-                text = data.precipitation,
-                style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier
-            )
-            Text(
-                text = data.precipitationType,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(R.string.tmpl_probability).format(data.probability),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-            )
-        }
-    }
+        title = data.precipitation,
+        subtitle = stringResource(data.precipitationType),
+        footnote = data.probability?.let { stringResource(R.string.tmpl_probability).format(it) },
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)

@@ -2,7 +2,7 @@ package com.basilalasadi.iti.kotlin.weatherwatcher.data.city.repository
 
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.LocalizedName
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.common.model.Result
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.CityException
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.DataException
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.City
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.local.CityLocalDataSource
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.remote.CityRemoteDataSource
@@ -118,7 +118,7 @@ class LocationRepositoryTest {
             remoteDataSource.findCitiesByQuery("city")
         } coAnswers {
             delay(1000)
-            throw CityException("Cannot reach API.")
+            throw DataException("Cannot reach API.")
         }
         
         val repository = CityRepositoryImpl(localDataSource, remoteDataSource)
@@ -131,7 +131,7 @@ class LocationRepositoryTest {
         assertEquals(Result.Loading<List<City>>(), results[0])
         assertEquals(Result.Loading<List<City>>(listOf()), results[1])
         
-        assertTrue(results[2] is Result.Failure<*, *>)
-        assertNotNull((results[2] as Result.Failure<*, *>).value)
+        assertTrue(results[2] is Result.Failure<*>)
+        assertNotNull((results[2] as Result.Failure<*>).value)
     }
 }

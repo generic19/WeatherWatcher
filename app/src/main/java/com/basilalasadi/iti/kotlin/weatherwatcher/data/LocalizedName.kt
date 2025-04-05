@@ -1,5 +1,8 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.data
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class LocalizedName(
     val arabic: String?,
     val english: String?,

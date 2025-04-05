@@ -7,12 +7,16 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import androidx.annotation.RequiresPermission
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.City
 import com.google.android.gms.location.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-class AppLocationManager(private val application: Application) {
+class LocationHelper(private val application: Application) {
     val arePermissionsGranted: Boolean get() {
         return sequenceOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -33,12 +37,12 @@ class AppLocationManager(private val application: Application) {
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     ])
-    fun getLocation(): Flow<Location> = callbackFlow<Location> {
+    fun getLocationFlow(): Flow<Location> = callbackFlow<Location> {
         val locationProvider = getLocationProvider()
         
-        val request = LocationRequest.Builder(Priority.PRIORITY_LOW_POWER, 5000)
-            .setGranularity(Granularity.GRANULARITY_COARSE)
-            .setMaxUpdateAgeMillis(1 * 60 * 60 * 1000)
+        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 3000)
+            .setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+            .setMaxUpdateAgeMillis(60 * 1000)
             .build()
         
         val locationCallback = object : LocationCallback() {
@@ -60,6 +64,33 @@ class AppLocationManager(private val application: Application) {
         }
     }
     
+    @RequiresPermission(allOf = [
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ])
+    suspend fun getCurrentLocation(): Location {
+        val locationProvider = getLocationProvider()
+        
+        val request = CurrentLocationRequest.Builder()
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+            .setMaxUpdateAgeMillis(60 * 1000)
+            .build()
+        
+        return suspendCancellableCoroutine { cont ->
+            locationProvider.getCurrentLocation(request, null)
+                .addOnSuccessListener {
+                    cont.resume(it)
+                }
+                .addOnFailureListener {
+                    cont.resumeWithException(it)
+                }
+                .addOnCanceledListener {
+                    cont.cancel()
+                }
+        }
+    }
+    
     private fun getLocationProvider(): FusedLocationProviderClient {
         if (!isLocationEnabled) {
             throw LocationException("Location is not enabled.")
@@ -74,3 +105,6 @@ class AppLocationManager(private val application: Application) {
         return application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 }
+
+fun Location.asCoordinates() = City.Coordinates(latitude, longitude)
+

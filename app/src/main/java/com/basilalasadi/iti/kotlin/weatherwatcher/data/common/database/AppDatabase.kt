@@ -9,11 +9,14 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.local.databas
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.local.database.CityDao
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.local.database.dto.AlertEntity
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.local.database.dto.CityEntity
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.local.database.WeatherDao
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.local.database.dto.WeatherEntity
 
-@Database(version = 1, entities = [CityEntity::class, AlertEntity::class])
+@Database(version = 1, entities = [WeatherEntity::class, CityEntity::class, AlertEntity::class])
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun getLocationDao(): CityDao
+    abstract fun getWeatherDao(): WeatherDao
+    abstract fun getCityDao(): CityDao
     abstract fun getAlertDao(): AlertDao
     
     companion object {

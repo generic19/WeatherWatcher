@@ -1,7 +1,7 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.remote
 
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.LocalizedName
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.CityException
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.DataException
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.City
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.remote.api.GeocodingResult
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.remote.api.CityApiService
@@ -20,10 +20,10 @@ class CityRemoteDataSourceImpl(private val cityApiService: CityApiService) : Cit
             if (response.isSuccessful) {
                 return response.body()!!.map { it.toModel() }
             } else {
-                throw CityException("Geocoding API responded with ${response.message()}.")
+                throw DataException("Geocoding API responded with ${response.message()}.")
             }
         } catch (ex: IOException) {
-            throw CityException("Could not reach geocoding API.", ex)
+            throw DataException("Could not reach geocoding API.", ex)
         }
     }
 
@@ -38,15 +38,15 @@ class CityRemoteDataSourceImpl(private val cityApiService: CityApiService) : Cit
                 val results = response.body()!!.map { it.toModel() }
 
                 if (results.isEmpty()) {
-                    throw CityException("Could not geocode location (${coordinates.latitude}, ${coordinates.longitude}).")
+                    throw DataException("Could not geocode location (${coordinates.latitude}, ${coordinates.longitude}).")
                 }
 
                 return results[0]
             } else {
-                throw CityException("Geocoding API responded with ${response.message()}.")
+                throw DataException("Geocoding API responded with ${response.message()}.")
             }
         } catch (ex: IOException) {
-            throw CityException("Could not reach geocoding API.", ex)
+            throw DataException("Could not reach geocoding API.", ex)
         }
     }
 }
