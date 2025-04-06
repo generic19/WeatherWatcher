@@ -4,7 +4,6 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Units.Dista
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Units.Distance.Kilometer
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Units.Distance.Meter
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Units.Distance.Mile
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Units.Pressure
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Units.Pressure.Bar
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Units.Pressure.HectoPascal
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.model.Units.Pressure.InchesOfMercury
@@ -87,12 +86,12 @@ sealed interface Units {
         
         data class MetersPerSecond(override val value: Double) : Speed {
             override fun toMetersPerSecond(): Double = value
-            override fun toKilometersPerHour(): Double = value / 1000.0
+            override fun toKilometersPerHour(): Double = value * 3.6
             override fun toMilesPerHour(): Double = value * 2.23694
         }
         
         data class KilometersPerHour(override val value: Double) : Speed {
-            override fun toMetersPerSecond(): Double = value
+            override fun toMetersPerSecond(): Double = value / 3.6
             override fun toKilometersPerHour(): Double = value
             override fun toMilesPerHour(): Double = value * 2.23694
         }

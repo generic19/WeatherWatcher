@@ -101,7 +101,7 @@
     <string name="rating_poor">Poor</string>
     <string name="rating_very_poor">Very Poor</string>
     <string name="lbl_air_pollution">Air Pollution</string>
-    <string name="shared_preferences">settings</string>
+    <string name="shared_preferences" translatable="false">settings</string>
     <string name="system_default">System Default</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>

@@ -1,44 +1,26 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.ui.core
 
-import android.os.Bundle
+import android.app.LocaleManager
+import android.os.*
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.basilalasadi.iti.kotlin.weatherwatcher.R
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.repository.CityRepositoryImpl
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.local.CityLocalDataSourceImpl
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.remote.CityRemoteDataSourceImpl
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.remote.api.CityApiService
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.common.database.AppDatabase
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.SettingsRepository
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.repository.WeatherRepositoryImpl
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.local.WeatherLocalDataSourceImpl
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote.WeatherRemoteDataSourceImpl
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote.api.WeatherApiService
+import androidx.navigation.compose.*
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.*
 import com.basilalasadi.iti.kotlin.weatherwatcher.ui.alerts.view.AlertsScreen
 import com.basilalasadi.iti.kotlin.weatherwatcher.ui.alerts.viewmodel.AlertsViewModel
 import com.basilalasadi.iti.kotlin.weatherwatcher.ui.core.theme.WeatherWatcherTheme
@@ -48,33 +30,22 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.ui.savedlocations.view.SavedLo
 import com.basilalasadi.iti.kotlin.weatherwatcher.ui.savedlocations.viewmodel.SavedLocationsViewModel
 import com.basilalasadi.iti.kotlin.weatherwatcher.ui.settings.view.SettingsScreen
 import com.basilalasadi.iti.kotlin.weatherwatcher.ui.settings.viewmodel.SettingsViewModel
-import com.basilalasadi.iti.kotlin.weatherwatcher.ui.utility.location.LocationHelper
-import com.basilalasadi.iti.kotlin.weatherwatcher.ui.utility.work.AlertScheduler
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlin.reflect.KClass
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        val database = AppDatabase.getInstance(this)
-        val weatherDao = database.getWeatherDao()
-        val cityDao = database.getCityDao()
-        val alertDao = database.getAlertDao()
+        val app = application as WeatherWatcherApplication
         
-        val weatherApiService = WeatherApiService.create()
-        val cityApiService = CityApiService.create()
-        
-        val weatherRepository = WeatherRepositoryImpl(
-            localDataSource =  WeatherLocalDataSourceImpl(weatherDao),
-            remoteDataSource = WeatherRemoteDataSourceImpl(weatherApiService)
-        )
-        val cityRepository = CityRepositoryImpl(
-            localDataSource = CityLocalDataSourceImpl(cityDao, alertDao),
-            remoteDataSource = CityRemoteDataSourceImpl(cityApiService),
-        )
-        val settingsRepository = SettingsRepository(getSharedPreferences(getString(R.string.shared_preferences), 0))
-        val locationHelper = LocationHelper(application)
-        val alertScheduler = AlertScheduler(this)
+        val weatherRepository = app.weatherRepository
+        val cityRepository = app.cityRepository
+        val settingsRepository = app.settingsRepository
+        val locationHelper = app.locationHelper
+        val alertScheduler = app.alertScheduler
         
         val currentWeatherDependencies = CurrentWeatherViewModel.Dependencies(
             weatherRepository = weatherRepository,
@@ -102,6 +73,10 @@ class MainActivity : ComponentActivity() {
             
             val navController = rememberNavController()
             val addAction = remember { mutableStateOf<(() -> Unit)?>(null) }
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                LanguageWatcher(settingsRepository)
+            }
             
             WeatherWatcherTheme(
                 darkTheme = darkTheme.value,
@@ -198,6 +173,49 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun<T: Route> NavDestination?.hasRoute(route: KClass<T>): Boolean {
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@Composable
+fun LanguageWatcher(settingsRepository: SettingsRepository) {
+    val localActivity = LocalActivity.current!!
+    val localeManager = localActivity.getSystemService(LocaleManager::class.java)
+    
+    LaunchedEffect(Unit) {
+        settingsRepository.settingsFlow
+            .filter { it.first == Settings.Language }
+            .map { it.second as Setting.Language }
+            .collect { languageSetting ->
+                val currentLocales = localeManager.applicationLocales
+                
+                when (languageSetting) {
+                    Setting.Language.Default -> {
+                        if (currentLocales != LocaleList.getEmptyLocaleList()) {
+                            localeManager.applicationLocales = LocaleList.getEmptyLocaleList()
+                            localActivity.recreate()
+                        }
+                    }
+                    
+                    Setting.Language.English -> {
+                        val requestedLocales = LocaleList.forLanguageTags("en")
+                        
+                        if (currentLocales != requestedLocales) {
+                            localeManager.applicationLocales = requestedLocales
+                            localActivity.recreate()
+                        }
+                    }
+                    
+                    Setting.Language.Arabic -> {
+                        val requestedLocales = LocaleList.forLanguageTags("ar")
+                        
+                        if (currentLocales != requestedLocales) {
+                            localeManager.applicationLocales = requestedLocales
+                            localActivity.recreate()
+                        }
+                    }
+                }
+            }
+    }
+}
+
+fun <T : Route> NavDestination?.hasRoute(route: KClass<T>): Boolean {
     return this?.hierarchy?.any { it.hasRoute(route) } == true
 }

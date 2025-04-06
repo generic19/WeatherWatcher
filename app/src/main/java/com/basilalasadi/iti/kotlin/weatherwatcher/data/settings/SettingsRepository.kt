@@ -2,7 +2,6 @@ package com.basilalasadi.iti.kotlin.weatherwatcher.data.settings
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.Settings
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -16,7 +15,7 @@ class SettingsRepository(private val sharedPreferences: SharedPreferences) {
                 val setting = settings?.let { getSetting(sharedPreferences, it) }
                 
                 if (settings != null && setting != null) {
-                    trySend(settings to setting)
+                    trySendBlocking(settings to setting)
                 }
             }
         }

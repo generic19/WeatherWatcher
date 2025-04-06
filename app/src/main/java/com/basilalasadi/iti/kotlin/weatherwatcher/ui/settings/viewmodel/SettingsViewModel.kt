@@ -1,32 +1,31 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.ui.settings.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.AppLocale
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.repository.CityRepository
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.Setting
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.Settings
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.SettingsRepository
-import com.basilalasadi.iti.kotlin.weatherwatcher.ui.savedlocations.view.CityCardData
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.runningFold
-import java.util.Locale
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.common.model.Result
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.settings.*
+import com.basilalasadi.iti.kotlin.weatherwatcher.ui.savedlocations.view.CityCardData
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val cityRepository: CityRepository,
 ) : ViewModel() {
-    private val TAG = "SettingsViewModel"
+    lateinit var allSettingsFlow: StateFlow<Map<Settings, Setting>>
     
-    val allSettingsFlow = settingsRepository.settingsFlow
-        .runningFold(settingsRepository.get()) { map, pair ->
-            Log.i(TAG, "folding $pair onto $map")
-            map.plus(pair)
+    init {
+        viewModelScope.launch {
+            allSettingsFlow = settingsRepository.settingsFlow
+                .runningFold(settingsRepository.get()) { map, pair ->
+                    map.plus(pair)
+                }
+                .stateIn(this)
         }
-        
+    }
+    
     fun saveSetting(setting: Setting) {
         settingsRepository.put(setting)
     }

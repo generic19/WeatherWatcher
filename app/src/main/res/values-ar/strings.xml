@@ -102,7 +102,6 @@
     <string name="rating_poor">سيء</string>
     <string name="rating_very_poor">سيء جداً</string>
     <string name="lbl_air_pollution">تلوث الهواء</string>
-    <string name="shared_preferences">الإعدادات</string>
     <string name="system_default">لغة الهاتف</string>
     <string name="english">الإنجليزية</string>
     <string name="arabic">العربية</string>
