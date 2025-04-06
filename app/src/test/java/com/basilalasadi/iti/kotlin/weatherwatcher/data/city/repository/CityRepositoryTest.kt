@@ -17,7 +17,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class LocationRepositoryTest {
+class CityRepositoryTest {
     private lateinit var remoteDataSource: CityRemoteDataSource
     private lateinit var localDataSource: CityLocalDataSource
     
@@ -96,7 +96,7 @@ class LocationRepositoryTest {
             assertTrue(results[2] is Result.Success)
             assertTrue(
                 results[2].value?.all {
-                    it in localCities && (
+                    it in remoteCities && (
                         it.name.arabic?.contains(query) == true
                         || it.name.english?.contains(query) == true
                     )

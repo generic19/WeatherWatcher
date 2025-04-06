@@ -5,16 +5,10 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LocationDaoTest">
+      <SelectionState runConfigName="addAlert_alert_alertAdded()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="findCloseCity_closestCity()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="setFavorite_favoriteSet()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="Preview">
+      <SelectionState runConfigName="removeAlert_alerts_alertRemoved()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

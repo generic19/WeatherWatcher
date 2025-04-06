@@ -7,7 +7,7 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.source.remote.api.Ci
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class LocationRemoteDataSourceTest {
+class CityRemoteDataSourceTest {
     private val remote = CityRemoteDataSourceImpl(CityApiService.create())
 
     private val city = City(

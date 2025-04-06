@@ -8,7 +8,7 @@ class WeatherApiServiceTest {
 
     @Test
     fun getCurrentWeather_coordinatesAndArabic_successfulResponse() = runBlocking {
-        val response = service.getCurrentWeather(30.0444, 31.2357, "ar")
+        val response = service.getCurrentWeather(30.0444, 31.2357)
         println(response)
 
         assert(response.isSuccessful)
@@ -19,7 +19,7 @@ class WeatherApiServiceTest {
 
     @Test
     fun getCurrentWeather_coordinatesAndEnglish_successfulResponse() = runBlocking {
-        val response = service.getCurrentWeather(30.0444, 31.2357, "en")
+        val response = service.getCurrentWeather(30.0444, 31.2357)
         println(response)
 
         assert(response.isSuccessful)

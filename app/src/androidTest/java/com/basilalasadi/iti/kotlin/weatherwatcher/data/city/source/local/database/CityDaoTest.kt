@@ -22,7 +22,7 @@ import kotlin.math.pow
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class LocationDaoTest {
+class CityDaoTest {
     private lateinit var database: AppDatabase
     private lateinit var dao: CityDao
     

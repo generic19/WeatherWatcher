@@ -1,8 +1,7 @@
 package com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote
 
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.City
-import com.basilalasadi.iti.kotlin.weatherwatcher.data.AppLocale
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.LocalizedName
+import com.basilalasadi.iti.kotlin.weatherwatcher.data.city.model.City
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote.api.WeatherApiService
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -21,7 +20,7 @@ class WeatherRemoteDataSourceTest {
 
     @Test
     fun getCurrentWeather_cairoAndArabic_noExceptions() = runBlocking {
-        val weather = remote.getCurrentWeather(city, AppLocale.Arabic)
+        val weather = remote.getCurrentWeather(city)
         println(weather)
 
         return@runBlocking
@@ -29,7 +28,7 @@ class WeatherRemoteDataSourceTest {
 
     @Test
     fun getWeatherForecast_cairoAndArabic_noExceptions() = runBlocking {
-        val weather = remote.getWeatherForecast(city, AppLocale.Arabic)
+        val weather = remote.getWeatherForecast(city)
         println(weather)
 
         return@runBlocking
