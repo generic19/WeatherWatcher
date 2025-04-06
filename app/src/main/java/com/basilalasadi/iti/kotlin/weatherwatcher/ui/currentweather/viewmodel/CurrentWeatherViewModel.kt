@@ -2,6 +2,7 @@ package com.basilalasadi.iti.kotlin.weatherwatcher.ui.currentweather.viewmodel
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.*
 import com.basilalasadi.iti.kotlin.weatherwatcher.data.DataException
@@ -16,6 +17,7 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.ui.utility.location.asCoordina
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 class CurrentWeatherViewModel(
     private val weatherRepository: WeatherRepository,
@@ -65,24 +67,26 @@ class CurrentWeatherViewModel(
             
             var error: DataException? = null
             
-            joinAll(
+            supervisorScope {
                 launch {
                     try {
                         weatherRepository.loadCurrentWeather(city)
-                    }
-                    catch (ex: DataException) {
+                    } catch (ex: DataException) {
                         error = ex
+                    } catch (ex: Exception) {
+                        Log.e(TAG, "load: weather $ex ${ex.stackTrace}", ex)
                     }
-                },
+                }
                 launch {
                     try {
                         weatherRepository.loadWeatherForecast(city)
-                    }
-                    catch (ex: DataException) {
+                    } catch (ex: DataException) {
                         error = ex
+                    } catch (ex: Exception) {
+                        Log.e(TAG, "load: forecast $ex ${ex.stackTrace}", ex)
                     }
-                },
-            )
+                }
+            }.join()
             
             if (error == null) {
                 emit(Result.Success(Unit))
@@ -103,6 +107,10 @@ class CurrentWeatherViewModel(
         }.collect {
             mutableData.emit(it)
         }
+    }
+    
+    companion object {
+        private const val TAG = "CurrentWeatherViewModel"
     }
     
     data class Dependencies(

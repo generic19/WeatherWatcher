@@ -9,6 +9,7 @@ import com.basilalasadi.iti.kotlin.weatherwatcher.data.weather.source.remote.api
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.io.IOException
+import java.net.UnknownHostException
 
 interface WeatherRemoteDataSource {
     suspend fun getCurrentWeather(city: City): Dated<Weather>
@@ -17,27 +18,27 @@ interface WeatherRemoteDataSource {
 
 class WeatherRemoteDataSourceImpl(private val weatherApiService: WeatherApiService) : WeatherRemoteDataSource {
     override suspend fun getCurrentWeather(city: City): Dated<Weather> = coroutineScope {
-        val currentWeatherDeferred = async {
-            weatherApiService.getCurrentWeather(
-                latitude = city.coordinates.latitude,
-                longitude = city.coordinates.longitude,
-            )
-        }
-
-        val airPollutionDeferred = async {
-            weatherApiService.getCurrentAirPollution(
-                latitude = city.coordinates.latitude,
-                longitude = city.coordinates.longitude,
-            )
-        }
-
         try {
+            val currentWeatherDeferred = async {
+                weatherApiService.getCurrentWeather(
+                    latitude = city.coordinates.latitude,
+                    longitude = city.coordinates.longitude,
+                )
+            }
+            
+            val airPollutionDeferred = async {
+                weatherApiService.getCurrentAirPollution(
+                    latitude = city.coordinates.latitude,
+                    longitude = city.coordinates.longitude,
+                )
+            }
+            
             val currentWeatherResponse = currentWeatherDeferred.await()
             val airPollutionResponse = airPollutionDeferred.await()
-
+            
             if (currentWeatherResponse.isSuccessful) {
                 val currentWeather = currentWeatherResponse.body()!!
-
+                
                 return@coroutineScope currentWeather.toDatedModel(
                     timezone = currentWeather.timezone!!,
                     sunrise = currentWeather.system.sunriseUtcTimestamp!!,
@@ -49,9 +50,11 @@ class WeatherRemoteDataSourceImpl(private val weatherApiService: WeatherApiServi
             }
         } catch (ex: IOException) {
             throw DataException("Could not reach weather API.", ex)
+        } catch (ex: UnknownHostException) {
+            throw DataException("Could not reach weather API.", ex)
         }
     }
-
+    
     override suspend fun getWeatherForecast(city: City): List<Dated<Weather>> {
         val response = try {
             weatherApiService.getWeatherForecast(
@@ -60,11 +63,13 @@ class WeatherRemoteDataSourceImpl(private val weatherApiService: WeatherApiServi
             )
         } catch (ex: IOException) {
             throw DataException("Could not reach weather API.", ex)
+        } catch (ex: UnknownHostException) {
+            throw DataException("Could not reach weather API.", ex)
         }
-
+        
         if (response.isSuccessful) {
             val weatherData = response.body()!!
-
+            
             return weatherData.dataPoints.map {
                 it.toDatedModel(
                     timezone = weatherData.city.timezone,
